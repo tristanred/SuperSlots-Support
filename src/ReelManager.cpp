@@ -28,7 +28,7 @@ ReelManager::ReelManager(int reels, int rows)
     this->Symbols = NULL;
 
     this->reelManagerSeed = (unsigned int)time(0);
-    printf("Created ReelManager with seed %ld\n", this->reelManagerSeed);
+    printf("Created ReelManager with seed %ud\n", this->reelManagerSeed);
 }
 
 ReelManager::~ReelManager()
@@ -200,8 +200,6 @@ LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
 
     // Win info
     int winLength = -1;
-    int winSymbol = -1;
-    int winAmount = -1;
 
     // Go through each symbol on the rest of the line
     for(int i = 1; i < this->Reels; i++)

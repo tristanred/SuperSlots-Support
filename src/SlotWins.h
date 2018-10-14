@@ -30,3 +30,11 @@ public:
     int winAmount;
 };
 
+class SpecialWin
+{
+public:
+    SpecialWin();
+    ~SpecialWin();
+
+    int FreeGamesWon;
+};

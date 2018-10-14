@@ -8,6 +8,7 @@ class LineSet;
 class SymbolSet;
 class Symbol;
 class LineWin;
+class ScatterWin;
 
 //#define FAKE_SPIN
 
