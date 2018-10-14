@@ -28,7 +28,8 @@ ReelManager::ReelManager(int reels, int rows)
     this->Symbols = NULL;
 
     this->reelManagerSeed = (unsigned int)time(0);
-    printf("Created ReelManager with seed %ud\n", this->reelManagerSeed);
+    srand(this->reelManagerSeed);
+    printf("Created ReelManager with seed %u\n", this->reelManagerSeed);
 }
 
 ReelManager::~ReelManager()
@@ -56,6 +57,10 @@ void ReelManager::CreateDefaultObjects()
     this->Lines = LineSet::Generate10Lines();
 }
 
+/**
+ * Spin to win !
+ * Theres a special define value to force the spin to a specific value.
+ */
 void ReelManager::Spin()
 {
 #ifdef FAKE_SPIN
@@ -82,7 +87,6 @@ void ReelManager::Spin()
     return;
 #endif
 
-    srand(this->reelManagerSeed);
     for (int i = 0; i < this->Reels; i++)
     {
         int rsLen = this->reelstrips[i]->Length;
@@ -96,6 +100,13 @@ void ReelManager::Spin()
     }
 }
 
+/**
+ * Augments the value of a symbol on the board. This will upgrade the symbol
+ * to the next higher symbol. This always take the symbol that is 1 index under
+ * the current symbol and depends on symbols being ordered by id in the
+ * SymbolSet object.
+ * Reel and Row parameter must be 1-based, not index values.
+ */
 void ReelManager::AugmentSymbol(int reel, int row)
 {
     if(reel > this->Reels || row > this->Rows)
@@ -113,6 +124,12 @@ void ReelManager::AugmentSymbol(int reel, int row)
     }
 }
 
+/**
+ * Select a single symbol and rerolls the value. The reroll will simply get
+ * another symbol from the reelstrip and not just a random through the
+ * game symbols.
+ * Reel and Row parameter must be 1-based, not index values.
+ */
 void ReelManager::RespinSymbol(int reel, int row)
 {
     if(reel > this->Reels || row > this->Rows)
@@ -126,7 +143,8 @@ void ReelManager::RespinSymbol(int reel, int row)
     int rowIndex = row - 1;
 
     int rsLen = this->reelstrips[reelIndex]->Length;
-    this->ReelSymbols[reelIndex][rowIndex] = this->reelstrips[reelIndex]->Symbols[(this->ReelStops[reelIndex] + rowIndex) % rsLen];
+    Symbol* newSymbol = this->reelstrips[reelIndex]->Symbols[rand() % rsLen];
+    this->ReelSymbols[reelIndex][rowIndex] = newSymbol;
 }
 
 void ReelManager::PrintCurrentCombination()
@@ -141,6 +159,15 @@ void ReelManager::PrintCurrentCombination()
     }
 }
 
+/**
+ * Returns the total value won from the board.
+ * The implementation is very primitive for now. Line wins are added
+ * directly to scatter wins but scatter wins need to be multiplied to
+ * total bet and line wins to line bet. We don't report anything else
+ * than a number but we should report what other kind of prizes we won.
+ * There is also no knowledge of money in the RM right now so line bet,
+ * denom or other crap is not supported yet.
+ */
 int ReelManager::CalculateWins()
 {
     int totalWin = 0;
@@ -187,6 +214,19 @@ int ReelManager::CalculateWins()
     return totalWin;
 }
 
+/**
+ * Line win calculation method for a single line.
+ * We take the symbols on a line and check them sequentially
+ * to take the longest run of the same symbol starting from
+ * left to right.
+ *
+ * Specific behavior :
+ *  - A wild line always cede to the first non-wild symbol for its
+ *    line pay. Wild lines can only pay if the entire line is Wild.
+ *  - If multiple entries in the paytable exist for a winning
+ *    combination, we always return the first one, not the most
+ *    valuable one.
+ */
 LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
 {
     // Start with the first symbol on the line
@@ -198,10 +238,18 @@ LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
         return NULL;
     }
 
-    // Win info
+    // Win length value. This value is replaced each time
+    // we find a new symbol on the line.
     int winLength = -1;
 
-    // Go through each symbol on the rest of the line
+    /**
+     * Go through each symbol on the rest of the line
+     * This loop is a 'continue or beak' type. We start scanning
+     * each payline from the left, if the win line is still valid
+     * we 'continue' to the next loop. If we detect the line end
+     * we 'break' out and start checking the payable if what we got
+     * wins anything.
+     */
     for(int i = 1; i < this->Reels; i++)
     {
         Symbol* sym = lineSymbols[i];
@@ -262,6 +310,17 @@ LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
     return NULL;
 }
 
+/**
+ * Scatter win calculation method for the whole board.
+ * We make a total of the scatters on the board and use that count
+ * to find a prize in the paytable.
+ *
+ * Specific behavior :
+ *  - Depending on the reelstrip, we may find more Scatters than the biggest
+ *    prize advertized in the paytable. In this case we win nothing.
+ *  - We accumulate symbols with isScatter == true. This means we don't support
+ *    multiple scatter types.
+ */
 ScatterWin* ReelManager::CalculateScatterWins()
 {
     ScatterWin* wins = new ScatterWin();
