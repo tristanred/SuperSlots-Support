@@ -86,6 +86,7 @@ void ReelManager::Spin()
     for (int i = 0; i < this->Reels; i++)
     {
         int rsLen = this->reelstrips[i]->Length;
+
         this->ReelStops[i] = this->reelstrips[i]->Symbols[rand() % rsLen]->id;
 
         for(int k = 0; k < this->Rows; k++)
@@ -93,6 +94,39 @@ void ReelManager::Spin()
             this->ReelSymbols[i][k] = this->reelstrips[i]->Symbols[(this->ReelStops[i] + k) % rsLen];
         }
     }
+}
+
+void ReelManager::AugmentSymbol(int reel, int row)
+{
+    if(reel > this->Reels || row > this->Rows)
+    {
+        printf("Bad parameter to Augment Symbol");
+
+        return;
+    }
+
+    Symbol* sym = this->ReelSymbols[reel][row];
+
+    if(sym->id > 0)
+    {
+        this->ReelSymbols[reel][row] = this->Symbols->SymbolList[sym->id - 1];
+    }
+}
+
+void ReelManager::RespinSymbol(int reel, int row)
+{
+    if(reel > this->Reels || row > this->Rows)
+    {
+        printf("Bad parameter to Augment Symbol");
+
+        return;
+    }
+
+    int reelIndex = reel - 1;
+    int rowIndex = row - 1;
+
+    int rsLen = this->reelstrips[reelIndex]->Length;
+    this->ReelSymbols[reelIndex][rowIndex] = this->reelstrips[reelIndex]->Symbols[(this->ReelStops[reelIndex] + rowIndex) % rsLen];
 }
 
 void ReelManager::PrintCurrentCombination()

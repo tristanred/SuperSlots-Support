@@ -35,18 +35,23 @@ public:
     unsigned int reelManagerSeed;
 
     // Initialisation Methods
-
     void CreateDefaultObjects();
 
     // Gameplay methods
     void Spin();
 
+    void AugmentSymbol(int reel, int row);
+
+    void RespinSymbol(int reel, int row);
+
+    // Information methods
     void PrintCurrentCombination();
 
+
+    // Wins & Reporting
     int CalculateWins();
 
     LineWin* CalculateLineWin(Symbol** lineSymbols);
 
     ScatterWin* CalculateScatterWins();
-
 };
