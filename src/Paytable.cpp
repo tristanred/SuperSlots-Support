@@ -22,8 +22,6 @@ Paytable::~Paytable()
 
 Paytable* Paytable::GetDefaultPaytable(SymbolSet* symbols)
 {
-    int initialPaytablePrizeSymbolsCount = 3;
-
     Paytable* pt = new Paytable();
     pt->PrizeCount = 21;
     pt->Prizes = new PaytablePrize*[pt->PrizeCount];

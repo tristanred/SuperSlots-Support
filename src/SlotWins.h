@@ -11,7 +11,7 @@ public:
     int count;
     int winLineIndex;
 
-    Symbol* WinningSymbol;
+    Symbol* WinningSymbol; // Copy of the symbol, owned pointer.
 
     int winAmount;
 };
@@ -25,7 +25,7 @@ public:
     int count;
     int** winPositions; // int[reelPos][rowPos]
 
-    Symbol* WinningScatter;
+    Symbol* WinningScatter; // Copy of the symbol, owned pointer.
 
     int winAmount;
 };

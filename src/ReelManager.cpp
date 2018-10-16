@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "LineSet.h"
 #include "ReelStrip.h"
@@ -27,6 +28,10 @@ ReelManager::ReelManager(int reels, int rows)
     this->Lines = NULL;
     this->Symbols = NULL;
 
+    this->LineWins = NULL;
+    this->ScatterWins = NULL;
+    this->wonAmount = 0;
+
     this->reelManagerSeed = (unsigned int)time(0);
     srand(this->reelManagerSeed);
     printf("Created ReelManager with seed %u\n", this->reelManagerSeed);
@@ -34,12 +39,38 @@ ReelManager::ReelManager(int reels, int rows)
 
 ReelManager::~ReelManager()
 {
+    this->CleanWins();
+    if (LineWins != NULL)
+    {
+        delete(this->LineWins);
+    }
+
+    if (this->ScatterWins != NULL)
+    {
+        delete(this->ScatterWins);
+    }
+
     delete[] this->ReelStops;
 
     delete(this->reelstrips);
     delete(this->paytable);
     delete(this->Lines);
     delete(this->Symbols);
+}
+
+LineWin** ReelManager::GetLineWins()
+{
+    return this->LineWins;
+}
+
+ScatterWin* ReelManager::GetScatterWins()
+{
+    return this->ScatterWins;
+}
+
+int ReelManager::GetWonAmount()
+{
+    return this->wonAmount;
 }
 
 void ReelManager::CreateDefaultObjects()
@@ -55,6 +86,12 @@ void ReelManager::CreateDefaultObjects()
     this->paytable = Paytable::GetDefaultPaytable(this->Symbols);
 
     this->Lines = LineSet::Generate10Lines();
+
+    this->LineWins = new LineWin*[this->Lines->PatternsCount];
+    for (int i = 0; i < this->Lines->PatternsCount; i++)
+    {
+        this->LineWins[i] = NULL;
+    }
 }
 
 /**
@@ -170,6 +207,8 @@ void ReelManager::PrintCurrentCombination()
  */
 int ReelManager::CalculateWins()
 {
+    this->CleanWins();
+
     int totalWin = 0;
 
     Symbol** symbolsOnLine = new Symbol*[this->Reels];
@@ -188,6 +227,8 @@ int ReelManager::CalculateWins()
         {
             totalWin += wins->winAmount;
 
+            wins->winLineIndex = i; // Hotfix winline
+
             printf("WinLine %d : Length = %d, Won = %d", i, wins->count, wins->winAmount);
 
             printf(" (");
@@ -196,9 +237,10 @@ int ReelManager::CalculateWins()
                 printf("%d ", symbolsOnLine[k]->id);
             }
             printf(")\n");
+
         }
 
-        delete(wins);
+        this->LineWins[i] = wins;
     }
 
     delete(symbolsOnLine);
@@ -210,6 +252,7 @@ int ReelManager::CalculateWins()
 
         printf("Scatter Win : Length = %d, Won %d\n", scatterWin->count, scatterWin->winAmount);
     }
+    this->ScatterWins = scatterWin;
 
     return totalWin;
 }
@@ -300,7 +343,8 @@ LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
             LineWin* win = new LineWin();
             win->count = winLength;
             win->winAmount = prize->PrizeWins;
-            win->WinningSymbol = lineWinSymbol;
+            win->WinningSymbol = new Symbol();
+            memcpy(win->WinningSymbol, lineWinSymbol, sizeof(Symbol));
             win->winLineIndex = -1; // Don't know from here.
 
             return win;
@@ -361,4 +405,20 @@ ScatterWin* ReelManager::CalculateScatterWins()
     }
 
     return NULL;
+}
+
+void ReelManager::CleanWins()
+{
+    for (int i = 0; i < this->Lines->PatternsCount; i++)
+    {
+        if (this->LineWins[i] != NULL)
+        {
+            delete(this->LineWins[i]);
+        }
+    }
+
+    if (this->ScatterWins != NULL)
+    {
+        delete(this->ScatterWins);
+    }
 }
