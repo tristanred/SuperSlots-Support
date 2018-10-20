@@ -13,7 +13,7 @@ public:
     int Length;
     Symbol** Symbols; // Borrowed list
 
-    static ReelStrip* GenerateReelstripFromConfig(const char* configPath, SymbolSet* symbols);
+    static ReelStrip** GenerateReelstripSetFromConfig(const char* configPath, SymbolSet* symbols, int amount);
     static ReelStrip* GenerateRandomReelstrip(int length, SymbolSet* symbols);
 
 };
