@@ -18,5 +18,5 @@ ScatterWin::ScatterWin()
 
 ScatterWin::~ScatterWin()
 {
-
+    
 }

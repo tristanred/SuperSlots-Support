@@ -18,8 +18,10 @@ LineSet::~LineSet()
 {
     for (int i = 0; i < this->PatternsCount; i++)
     {
-        delete(this->LinePatterns[i]);
+        delete[] this->LinePatterns[i];
     }
+
+    delete[] this->LinePatterns;
 }
 
 LineSet* LineSet::Generate10Lines()

@@ -17,7 +17,7 @@ Paytable::~Paytable()
         delete(this->Prizes[i]);
     }
 
-    delete(this->Prizes);
+    delete[] this->Prizes;
 }
 
 Paytable* Paytable::GetDefaultPaytable(SymbolSet* symbols)

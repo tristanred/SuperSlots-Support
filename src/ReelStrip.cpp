@@ -19,6 +19,7 @@ ReelStrip::ReelStrip(Symbol** symbols, int length)
 
 ReelStrip::~ReelStrip()
 {
+    delete[] this->Symbols;
 }
 
 ReelStrip* ReelStrip::GenerateRandomReelstrip(int length, SymbolSet* symbols)

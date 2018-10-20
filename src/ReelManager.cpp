@@ -42,7 +42,7 @@ ReelManager::~ReelManager()
     this->CleanWins();
     if (LineWins != NULL)
     {
-        delete(this->LineWins);
+        delete[] this->LineWins;
     }
 
     if (this->ScatterWins != NULL)
@@ -52,7 +52,19 @@ ReelManager::~ReelManager()
 
     delete[] this->ReelStops;
 
-    delete(this->reelstrips);
+    for (int i = 0; i < this->Reels; i++)
+    {
+        delete(this->reelstrips[i]);
+    }
+    delete[] this->reelstrips;
+
+    for (int i = 0; i < this->Reels; i++)
+    {
+        delete[] this->ReelSymbols[i];
+    }
+    delete[] this->ReelSymbols;
+
+
     delete(this->paytable);
     delete(this->Lines);
     delete(this->Symbols);
@@ -386,6 +398,8 @@ ScatterWin* ReelManager::CalculateScatterWins()
 
     if(scatterSymbol == NULL)
     {
+        delete(wins);
+
         return NULL;
     }
 
@@ -404,6 +418,7 @@ ScatterWin* ReelManager::CalculateScatterWins()
         }
     }
 
+    delete(wins);
     return NULL;
 }
 
@@ -414,11 +429,13 @@ void ReelManager::CleanWins()
         if (this->LineWins[i] != NULL)
         {
             delete(this->LineWins[i]);
+            this->LineWins[i] = NULL;
         }
     }
 
     if (this->ScatterWins != NULL)
     {
         delete(this->ScatterWins);
+        this->ScatterWins = NULL;
     }
 }

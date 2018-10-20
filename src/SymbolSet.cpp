@@ -40,7 +40,7 @@ SymbolSet::~SymbolSet()
         delete(this->SymbolList[i]);
     }
 
-    delete(this->SymbolList);
+    delete[] this->SymbolList;
 }
 
 SymbolSet *SymbolSet::CreateDefaultSet()
