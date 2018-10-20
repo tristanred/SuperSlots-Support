@@ -1,11 +1,11 @@
 # CMAKE template file. Easy use for small projects
 # Date : 14/10/2018
-# 
+#
 # To use, put in a directory. Create subdirectories /src and /build
 # cd build
 # cmake ..
 # make
-# ./ConsoleTester 
+# ./ConsoleTester
 
 cmake_minimum_required (VERSION 3.2)
 
@@ -27,6 +27,15 @@ set (CMAKE_CXX_STANDARD 11)
 file(GLOB_RECURSE HEADERS "src/*.h")
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+
+# Include the Libtech CMake project
+set(LIBTECH_SUPPORT_OPENGL off)
+add_subdirectory("lib/libtech")
+include_directories("lib/libtech/include")
+
+add_subdirectory("lib/pugixml")
+include_directories("lib/pugixml/src")
+
 # Set standard defines for Windows.
 # TODO : Description of the definitions
 IF(WIN32)
@@ -41,14 +50,23 @@ ENDIF(WIN32)
 IF(UNIX)
 ENDIF(UNIX)
 
+# Setup the Static and Shared library builds
+add_library(SUPERSLOTS-SUPPORT STATIC ${HEADERS} ${SOURCES})
+add_library(SUPERSLOTS-SUPPORT_D SHARED ${HEADERS} ${SOURCES})
+
 # Create the output executable, use the files found above.
-add_executable(ConsoleTester ${HEADERS} ${SOURCES})
+add_executable(SlotsConsoleTester "src/main.cpp")
+target_link_libraries(SlotsConsoleTester SUPERSLOTS-SUPPORT)
 
 # Set special project properties
 # On windows, set the debugging directory to the project directory, not the /build dir
 # On linux, deactivate Wall (why?).
 IF(WIN32)
-    set_target_properties(ConsoleTester PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
+    set_target_properties(SUPERSLOTS-SUPPORT PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
+    set_target_properties(SUPERSLOTS-SUPPORT_D PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
+    set_target_properties(SlotsConsoleTester PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
 ELSEIF(UNIX)
-    target_compile_options(ConsoleTester PRIVATE -Wall)
+    target_compile_options(SUPERSLOTS-SUPPORT PRIVATE -Wall)
+    target_compile_options(SUPERSLOTS-SUPPORT_D PRIVATE -Wall)
+    target_compile_options(SlotsConsoleTester PRIVATE -Wall)
 ENDIF(WIN32)
