@@ -54,6 +54,10 @@ ENDIF(UNIX)
 add_library(SUPERSLOTS-SUPPORT STATIC ${HEADERS} ${SOURCES})
 add_library(SUPERSLOTS-SUPPORT_D SHARED ${HEADERS} ${SOURCES})
 
+# Link dependencies
+target_link_libraries(SUPERSLOTS-SUPPORT LIBTECH pugixml)
+target_link_libraries(SUPERSLOTS-SUPPORT_D LIBTECHD pugixml)
+
 # Create the output executable, use the files found above.
 add_executable(SlotsConsoleTester "src/main.cpp")
 target_link_libraries(SlotsConsoleTester SUPERSLOTS-SUPPORT)
