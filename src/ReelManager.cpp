@@ -255,7 +255,7 @@ int ReelManager::CalculateWins()
         this->LineWins[i] = wins;
     }
 
-    delete(symbolsOnLine);
+    delete[] symbolsOnLine;
 
     ScatterWin* scatterWin = this->CalculateScatterWins();
     if(scatterWin != NULL)
