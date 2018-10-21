@@ -75,3 +75,11 @@ ELSEIF(UNIX)
     target_compile_options(SUPERSLOTS-SUPPORT_D PRIVATE -Wall)
     target_compile_options(SlotsConsoleTester PRIVATE -Wall)
 ENDIF(WIN32)
+
+# Copy the content files
+add_custom_command(
+    TARGET SUPERSLOTS-SUPPORT POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/content"
+    $<TARGET_FILE_DIR:SUPERSLOTS-SUPPORT>/content
+)

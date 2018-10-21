@@ -89,7 +89,7 @@ void ReelManager::CreateDefaultObjects()
 {
     this->Symbols = SymbolSet::CreateDefaultSet();
 
-    this->reelstrips = ReelStrip::GenerateReelstripSetFromConfig("", this->Symbols, this->Reels);
+    this->reelstrips = ReelStrip::GenerateReelstripSetFromConfig(REELSTRIP_CFG_PATH, this->Symbols, this->Reels);
 
     this->paytable = Paytable::GetDefaultPaytable(this->Symbols);
 

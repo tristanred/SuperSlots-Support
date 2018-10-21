@@ -58,18 +58,37 @@ ReelStrip** ReelStrip::GenerateReelstripSetFromConfig(const char* configPath, Sy
 
         const char* txt = reelStrip.text().as_string();
 
-        long int amount = 0;
-        int* numbers = convert_string_to_int_list(txt, &amount);
+        long int numbersCount = 0;
+        int* numbers = convert_string_to_int_list(txt, &numbersCount);
 
         rs_set[rs_index] = new ReelStrip();
-        rs_set[rs_index]->Length = amount;
-        rs_set[rs_index]->Symbols = new Symbol*[amount];
+        rs_set[rs_index]->Length = (int)numbersCount;
+        rs_set[rs_index]->Symbols = new Symbol*[numbersCount];
         
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < numbersCount; i++)
         {
             int num = numbers[i];
-            rs_set[rs_index]->Symbols[i] = symbols->SymbolList[num];
+
+            Symbol* found = NULL;
+            for(int k = 0; k < symbols->SymbolCount; k++)
+            {
+                if(symbols->SymbolList[k]->id == num)
+                {
+                    found = symbols->SymbolList[k];
+                    break;
+                }
+            }
+
+            if(found == NULL)
+            {
+                // Symbol in the strip is not found in the symbol set.
+                break;
+            }
+
+            rs_set[rs_index]->Symbols[i] = found;
         }
+
+        rs_index++;
     }
 
     return rs_set;
