@@ -2,6 +2,9 @@
 
 #include <stdlib.h>
 
+#define PUGIXML_HEADER_ONLY
+#include "pugixml.hpp"
+
 Symbol::Symbol()
 {
     this->id = 0;
@@ -41,6 +44,42 @@ SymbolSet::~SymbolSet()
     }
 
     delete[] this->SymbolList;
+}
+
+SymbolSet* SymbolSet::CreateFromConfig(const char* configPath)
+{
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(configPath);
+    if (!result)
+    {
+        // File not found
+        return NULL;
+    }
+
+    pugi::xpath_node_set symbolNodes = doc.select_nodes("/symbolsetConfig/symbolset[@id='0']/symbol");
+
+    SymbolSet* set = new SymbolSet();
+    set->SymbolCount = symbolNodes.size();
+    set->SymbolList = new Symbol*[set->SymbolCount];
+
+    for (pugi::xpath_node node : symbolNodes)
+    {
+        pugi::xml_node symbolNode = node.node();
+
+        int symbolId = symbolNode.attribute("id").as_int();
+        set->SymbolList[symbolId] = new Symbol();
+        set->SymbolList[symbolId]->id = symbolId;
+
+        const char* name = symbolNode.attribute("name").as_string();
+        set->SymbolList[symbolId]->name = new char[strlen(name)];
+        strcpy(set->SymbolList[symbolId]->name, name);
+
+
+        set->SymbolList[symbolId]->isScatter = symbolNode.attribute("isScatter").as_bool();
+        set->SymbolList[symbolId]->isWild = symbolNode.attribute("isWild").as_bool();
+    }
+
+    return set;
 }
 
 SymbolSet *SymbolSet::CreateDefaultSet()

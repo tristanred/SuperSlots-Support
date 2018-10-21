@@ -8,7 +8,7 @@ public:
     ~Symbol();
 
     int id;
-    const char* name; // Optional
+    char* name; // Optional
     bool isWild;
     bool isScatter;
 };
@@ -22,5 +22,6 @@ public:
     int SymbolCount;
     Symbol** SymbolList;
 
+    static SymbolSet* CreateFromConfig(const char* configPath);
     static SymbolSet* CreateDefaultSet();
 };

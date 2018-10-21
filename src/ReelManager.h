@@ -13,6 +13,9 @@ class ScatterWin;
 //#define FAKE_SPIN
 
 #define REELSTRIP_CFG_PATH "content/reelstrips.xml"
+#define LINESET_CFG_PATH "content/lines.xml"
+#define PAYTABLE_CFG_PATH "content/paytable.xml"
+#define SYMBOLS_CFG_PATH "content/symbols.xml"
 
 class ReelManager
 {

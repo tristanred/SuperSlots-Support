@@ -87,13 +87,13 @@ int ReelManager::GetWonAmount()
 
 void ReelManager::CreateDefaultObjects()
 {
-    this->Symbols = SymbolSet::CreateDefaultSet();
+    this->Symbols = SymbolSet::CreateFromConfig(SYMBOLS_CFG_PATH);
 
     this->reelstrips = ReelStrip::GenerateReelstripSetFromConfig(REELSTRIP_CFG_PATH, this->Symbols, this->Reels);
 
-    this->paytable = Paytable::GetDefaultPaytable(this->Symbols);
+    this->paytable = Paytable::GetPaytableFromConfig(PAYTABLE_CFG_PATH, this->Symbols);
 
-    this->Lines = LineSet::Generate10Lines();
+    this->Lines = LineSet::CreateLinesetFromConfig(LINESET_CFG_PATH);
 
     this->LineWins = new LineWin*[this->Lines->PatternsCount];
     for (int i = 0; i < this->Lines->PatternsCount; i++)
