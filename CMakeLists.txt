@@ -7,7 +7,7 @@
 # make
 # ./ConsoleTester
 
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required (VERSION 3.10)
 
 # Give the name of the project.
 project (SuperSlots-Support)
@@ -29,7 +29,8 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 
 # Include the Libtech CMake project
-set(LIBTECH_SUPPORT_OPENGL off)
+set(LIBTECH_SUPPORT_OPENGL OFF CACHE BOOL "Build OpenGL Components")
+
 add_subdirectory("lib/libtech")
 include_directories("lib/libtech/include")
 

@@ -12,6 +12,8 @@ class ScatterWin;
 
 //#define FAKE_SPIN
 
+#define REELSTRIP_CFG_PATH "content/reelstrips.xml"
+
 class ReelManager
 {
 public:
