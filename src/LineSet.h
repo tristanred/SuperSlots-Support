@@ -34,5 +34,6 @@ public:
     int PatternsCount;
     int** LinePatterns;
 
+    static LineSet* CreateLinesetFromConfig(const char* configPath);
     static LineSet* Generate10Lines();
 };

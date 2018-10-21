@@ -2,6 +2,11 @@
 
 #include <stdlib.h>
 
+#include <libtech/stringtools.h>
+
+#define PUGIXML_HEADER_ONLY
+#include "pugixml.hpp"
+
 LineSet::LineSet()
 {
     this->PatternsCount = 0;
@@ -22,6 +27,36 @@ LineSet::~LineSet()
     }
 
     delete[] this->LinePatterns;
+}
+
+LineSet* LineSet::CreateLinesetFromConfig(const char* configPath)
+{
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(configPath);
+    if(!result)
+    {
+        // File not found
+        return NULL;
+    }
+
+    pugi::xpath_node_set lineNodes = doc.select_nodes("/linesetConfig/lineset[@id='0']/line");
+
+    LineSet* newSet = new LineSet();
+    newSet->PatternsCount = lineNodes.size();
+    newSet->LinePatterns = new int*[newSet->PatternsCount];
+
+    for(pugi::xpath_node node: lineNodes)
+    {
+        pugi::xml_node lineNode = node.node();
+
+        int lineIndex = lineNode.attribute("id").as_int();
+
+        const char* lineData = lineNode.text().as_string();
+        long int count = 0;
+        newSet->LinePatterns[lineIndex] = convert_string_to_int_list(lineData, &count);
+    }
+
+    return newSet;
 }
 
 LineSet* LineSet::Generate10Lines()
