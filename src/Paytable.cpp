@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 #include "SymbolSet.h"
+#define PUGIXML_HEADER_ONLY
+#include "pugixml.hpp"
 
 Paytable::Paytable()
 {
@@ -18,6 +20,37 @@ Paytable::~Paytable()
     }
 
     delete[] this->Prizes;
+}
+
+Paytable* Paytable::GetPaytableFromConfig(const char* configPath, SymbolSet* symbols)
+{
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(configPath);
+    if(!result)
+    {
+        // File not found
+        return NULL;
+    }
+
+    pugi::xpath_node_set prizesNodes = doc.select_nodes("/paytableConfig/prizes/symbolPrize");
+
+    Paytable* pt = new Paytable();
+    pt->PrizeCount = prizesNodes.size();
+    pt->Prizes = new PaytablePrize*[pt->PrizeCount];
+
+    for(pugi::xpath_node node: prizesNodes)
+    {
+        pugi::xml_node prizeNode = node.node();
+
+        int xmlIndex = prizeNode.attribute("id").as_int();
+
+        pt->Prizes[xmlIndex] = new PaytablePrize();
+        pt->Prizes[xmlIndex]->SymbolID = prizeNode.attribute("symId").as_int();
+        pt->Prizes[xmlIndex]->PrizeWins = prizeNode.attribute("wins").as_int();
+        pt->Prizes[xmlIndex]->SymbolCount = prizeNode.attribute("count").as_int();
+    }
+
+    return pt;
 }
 
 Paytable* Paytable::GetDefaultPaytable(SymbolSet* symbols)

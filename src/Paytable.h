@@ -20,6 +20,7 @@ public:
     Paytable();
     ~Paytable();
 
+    static Paytable* GetPaytableFromConfig(const char* configPath, SymbolSet* symbols);
     static Paytable* GetDefaultPaytable(SymbolSet* symbols);
 
     int PrizeCount;
