@@ -1,6 +1,8 @@
 #pragma once
 
-class Symbol
+#include "SuperSlotsSupport.h"
+
+class SuperSlotsSupport_CLASS Symbol
 {
 public:
     Symbol();
@@ -13,7 +15,7 @@ public:
     bool isScatter;
 };
 
-class SymbolSet
+class SuperSlotsSupport_CLASS SymbolSet
 {
 public:
     SymbolSet();

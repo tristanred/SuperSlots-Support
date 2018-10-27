@@ -1,9 +1,11 @@
 #pragma once
 
+#include "SuperSlotsSupport.h"
+
 class Symbol;
 class SymbolSet;
 
-class PaytablePrize
+class SuperSlotsSupport_CLASS PaytablePrize
 {
 public:
     PaytablePrize();
@@ -14,7 +16,7 @@ public:
     int PrizeWins;
 };
 
-class Paytable
+class SuperSlotsSupport_CLASS Paytable
 {
 public:
     Paytable();

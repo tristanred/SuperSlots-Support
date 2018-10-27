@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SuperSlotsSupport.h"
 #include "SlotWins.h"
 
 class ReelStrip;
@@ -17,12 +18,13 @@ class ScatterWin;
 #define PAYTABLE_CFG_PATH "content/paytable.xml"
 #define SYMBOLS_CFG_PATH "content/symbols.xml"
 
-class ReelManager
+class SuperSlotsSupport_CLASS ReelManager
 {
 public:
     ReelManager(int reels, int rows);
     ~ReelManager();
 
+    bool isLoaded;
     int Reels;
     int Rows;
 

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "SuperSlotsSupport.h"
+
 class SymbolSet;
 class Symbol;
 
-class ReelStrip
+class SuperSlotsSupport_CLASS ReelStrip
 {
 public:
     ReelStrip();

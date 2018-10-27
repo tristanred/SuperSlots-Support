@@ -24,7 +24,9 @@
  *
 */
 
-class LineSet
+#include "SuperSlotsSupport.h"
+
+class SuperSlotsSupport_CLASS LineSet
 {
 public:
     LineSet();

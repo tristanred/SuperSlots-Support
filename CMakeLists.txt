@@ -55,13 +55,17 @@ ENDIF(UNIX)
 add_library(SUPERSLOTS-SUPPORT STATIC ${HEADERS} ${SOURCES})
 add_library(SUPERSLOTS-SUPPORT_D SHARED ${HEADERS} ${SOURCES})
 
+# Set the define to export the members
+target_compile_definitions(SUPERSLOTS-SUPPORT PRIVATE SuperSlotsSupport_EXPORTS)
+target_compile_definitions(SUPERSLOTS-SUPPORT_D PRIVATE SuperSlotsSupport_EXPORTS)
+
 # Link dependencies
 target_link_libraries(SUPERSLOTS-SUPPORT LIBTECH pugixml)
-target_link_libraries(SUPERSLOTS-SUPPORT_D LIBTECHD pugixml)
+target_link_libraries(SUPERSLOTS-SUPPORT_D LIBTECH pugixml)
 
 # Create the output executable, use the files found above.
 add_executable(SlotsConsoleTester "src/main.cpp")
-target_link_libraries(SlotsConsoleTester SUPERSLOTS-SUPPORT)
+target_link_libraries(SlotsConsoleTester SUPERSLOTS-SUPPORT_D)
 
 # Set special project properties
 # On windows, set the debugging directory to the project directory, not the /build dir

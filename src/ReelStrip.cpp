@@ -88,6 +88,8 @@ ReelStrip** ReelStrip::GenerateReelstripSetFromConfig(const char* configPath, Sy
             rs_set[rs_index]->Symbols[i] = found;
         }
 
+        delete[] numbers;
+
         rs_index++;
     }
 

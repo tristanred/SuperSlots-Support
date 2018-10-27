@@ -13,6 +13,8 @@
 
 ReelManager::ReelManager(int reels, int rows)
 {
+    isLoaded = false;
+
     this->Reels = reels;
     this->Rows = rows;
 
@@ -89,11 +91,35 @@ void ReelManager::CreateDefaultObjects()
 {
     this->Symbols = SymbolSet::CreateFromConfig(SYMBOLS_CFG_PATH);
 
+    if (this->Symbols == NULL)
+    {
+        printf("Cannot load the Symbols config, aborting\n");
+        return;
+    }
+
     this->reelstrips = ReelStrip::GenerateReelstripSetFromConfig(REELSTRIP_CFG_PATH, this->Symbols, this->Reels);
+
+    if (this->reelstrips == NULL)
+    {
+        printf("Cannot load the reelstrips config, aborting\n");
+        return;
+    }
 
     this->paytable = Paytable::GetPaytableFromConfig(PAYTABLE_CFG_PATH, this->Symbols);
 
+    if (this->paytable == NULL)
+    {
+        printf("Cannot load the paytable config, aborting\n");
+        return;
+    }
+
     this->Lines = LineSet::CreateLinesetFromConfig(LINESET_CFG_PATH);
+
+    if (this->Lines == NULL)
+    {
+        printf("Cannot load the lines config, aborting\n");
+        return;
+    }
 
     this->LineWins = new LineWin*[this->Lines->PatternsCount];
     for (int i = 0; i < this->Lines->PatternsCount; i++)
@@ -108,6 +134,12 @@ void ReelManager::CreateDefaultObjects()
  */
 void ReelManager::Spin()
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return;
+    }
+
 #ifdef FAKE_SPIN
     this->ReelSymbols[0][0] = new Symbol(6);
     this->ReelSymbols[0][1] = new Symbol(1);
@@ -154,9 +186,15 @@ void ReelManager::Spin()
  */
 void ReelManager::AugmentSymbol(int reel, int row)
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return;
+    }
+
     if(reel > this->Reels || row > this->Rows)
     {
-        printf("Bad parameter to Augment Symbol");
+        printf("Bad parameter to Augment Symbol\n");
 
         return;
     }
@@ -177,9 +215,15 @@ void ReelManager::AugmentSymbol(int reel, int row)
  */
 void ReelManager::RespinSymbol(int reel, int row)
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return;
+    }
+
     if(reel > this->Reels || row > this->Rows)
     {
-        printf("Bad parameter to Augment Symbol");
+        printf("Bad parameter to Augment Symbol\n");
 
         return;
     }
@@ -194,6 +238,12 @@ void ReelManager::RespinSymbol(int reel, int row)
 
 void ReelManager::PrintCurrentCombination()
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return;
+    }
+
     for(int i = 0; i < this->Rows; i++)
     {
         printf("[%d, %d, %d, %d, %d]\n", this->ReelSymbols[0][i]->id,
@@ -215,6 +265,12 @@ void ReelManager::PrintCurrentCombination()
  */
 int ReelManager::CalculateWins()
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return -1;
+    }
+
     this->CleanWins();
 
     int totalWin = 0;
@@ -280,6 +336,12 @@ int ReelManager::CalculateWins()
  */
 LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return NULL;
+    }
+
     // Start with the first symbol on the line
     Symbol* lineWinSymbol = lineSymbols[0];
 
@@ -375,6 +437,12 @@ LineWin* ReelManager::CalculateLineWin(Symbol** lineSymbols)
  */
 ScatterWin* ReelManager::CalculateScatterWins()
 {
+    if (this->isLoaded == false)
+    {
+        printf("ReelManager is not loaded.\n");
+        return NULL;
+    }
+
     ScatterWin* wins = new ScatterWin();
 
     Symbol* scatterSymbol = NULL;

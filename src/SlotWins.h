@@ -1,8 +1,10 @@
 #pragma once
 
+#include "SuperSlotsSupport.h"
+
 class Symbol;
 
-class LineWin
+class SuperSlotsSupport_CLASS LineWin
 {
 public:
     LineWin();
@@ -16,7 +18,7 @@ public:
     int winAmount;
 };
 
-class ScatterWin
+class SuperSlotsSupport_CLASS ScatterWin
 {
 public:
     ScatterWin();
@@ -30,7 +32,7 @@ public:
     int winAmount;
 };
 
-class SpecialWin
+class SuperSlotsSupport_CLASS SpecialWin
 {
 public:
     SpecialWin();
